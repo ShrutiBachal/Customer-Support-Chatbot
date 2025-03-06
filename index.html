@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+    <style>
+        body{
+            font-family: monospace;
+        }
+
+        #chatbox{                   /* Since it is an id, we added # , this is the main space where whole chat is stored*/
+            margin-left: auto;
+            margin-right: auto;
+            width : 80%  ;       /* Not to occupy whole web page*/
+            margin-top: 50px;
+        }
+
+        .botText{               /* Since botText is a class, we need to add . */
+            font-family: monospace;
+            font-size: 18px;
+            text-align: left;
+            line-height: 25px;
+            color:rgb(37, 39, 155);
+        }
+
+        #userInput{                 /* This is that box*/
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;          /*Keep same as chatbox */
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        #textInput{             /* Message given inside that box*/
+            border: 3px solid white;
+            border-bottom: 3px solid #657889;
+            font-family: monospace;
+            font-size: 16px;
+            text-align: left;
+            width: 60%;
+        }
+
+        #buttonInput{
+            padding: 5px;
+            font-family: monospace;
+            font-size: 16px;
+            text-align: right;
+            border: 3px solid rgb(55, 198, 91);
+            background: rgb(51, 150, 40);
+            color: white;
+        }
+
+        h1{
+            text-align: center;
+            font-size: 25px;
+            font-family: 'Times New Roman';
+            color: rgb(0, 0, 0);
+        }
+
+        .userText{      /* Class on line 93 */
+            text-align: right;
+            font-family: monospace;
+            font-size: 18px;
+            line-height: 25px;
+            color:rgb(59, 14, 106);
+        }
+
+    </style>
+</head>
+
+<body>
+    
+    <h1>Customer Service Bot</h1>
+    <div>
+        <div id="chatbox">      <!--id is just to know the function of this div tag-->
+            <p class="botText"><span>Hi there! How may I help you?</span></p>   <!--Initial msg to start the interaction-->
+
+        </div>
+        <div id="userInput">
+            <input id = "textInput" type="text" name="userMessage" placeholder="Type your message.."/>
+            <input id = "buttonInput" type="submit" value="Send"/>
+        </div>
+    </div>
+
+    <script>
+        function getUserResponse(){
+
+            var userText = $('#textInput').val();                   // making reference to the input field and storing the input in variable
+            var userHTML = "<p class='userText'> User : <span>"+userText+"</span></p>";
+
+            $('#textInput').val("");                                // making it blank after sending
+            $('#chatbox').append(userHTML);                         // Container for the message 
+
+            document.getElementById("userInput").scrollIntoView({block : 'start',behavior : 'smooth'});
+
+            $.get("/get",{userMessage:userText}).done(function(data){   // call back function returns data upon successful completion
+
+                // the data is the chat response sent by flask to user
+
+                var botHTML = "<p class='botText'> Bot_1.0 : <span>"+data+"</span></p>"    
+                $('#chatbox').append(botHTML);      // contains response with the previous message
+
+            });
+        }
+
+        $("#textInput").keypress(function(e){
+            if(e.which == 13){
+                getUserResponse();
+            }
+        });
+
+        $("buttonInput").click(function(){
+            getUserResponse();
+        })
+
+
+    </script>
+
+</body>
+</html>
